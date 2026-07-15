@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Convertisseur de Richesses & Réalités Sociales</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style src="K:\Alex\Amusement\style.css"></style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen py-10 px-4 flex flex-col items-center gap-10">
+
+    <!-- ================= ECRAN D'ACCUEIL (SAISIE & CHOIX) ================= -->
+    <div id="ecran-accueil" class="ecran-principal">
+        <!-- En-tête de l'application -->
+        <div class="bandeau-titre bg-gradient-to-r from-red-700 to-rose-900 text-white p-8 text-center">
+            <h1 class="titre-principal text-3xl font-extrabold tracking-tight">Le Redresseur de Perspective</h1>
+            <p class="sous-titre text-rose-100 mt-2 text-sm md:text-base">Mettez votre labeur en perspective avec les élites économiques, politiques et découvrez le coût social de leur fortune.</p>
+        </div>
+
+        <div class="formulaire-saisie p-6 md:p-8 space-y-6">
+            <!-- Saisie du Salaire -->
+            <div class="groupe-saisie-salaire">
+                <label for="entree-salaire-utilisateur" class="label-champ block text-sm font-semibold text-slate-700 mb-2">Votre revenu annuel net :</label>
+                <div class="conteneur-input relative rounded-md shadow-sm">
+                    <div class="symbole-monetaire pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <span class="text-slate-500 sm:text-base">€</span>
+                    </div>
+                    <input type="number" id="entree-salaire-utilisateur" value="30000" min="1" class="champ-salaire block w-full rounded-xl border border-slate-300 py-4 pl-10 pr-4 text-lg text-slate-900 font-bold focus:border-red-500 focus:ring-red-500 focus:outline-none" placeholder="Ex: 30000">
+                </div>
+            </div>
+
+            <!-- Choix de la cible à comparer -->
+            <div class="groupe-selection-cible">
+                <label class="label-choix block text-sm font-semibold text-slate-700 mb-3">Sélectionnez une cible de comparaison :</label>
+                <div class="grille-cibles grid grid-cols-1 gap-3 max-h-80 overflow-y-auto pr-1" id="grille-selection-cibles">
+                    <!-- Généré dynamiquement en JS (Cartes Cibles) -->
+                </div>
+            </div>
+
+            <!-- Option Politique Immigrés -->
+            <div class="encadre-option-immigres p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <label class="declencheur-option flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="case-option-immigres" class="checkbox-immigres mt-1 h-5 w-5 text-amber-600 border-amber-300 rounded focus:ring-amber-500">
+                    <div class="description-option">
+                        <span class="titre-option block text-sm font-bold text-amber-900">Activer l'option "Renvoyer tous les immigrés chez eux"</span>
+                        <span class="detail-option block text-xs text-amber-700">Calculer l'économie budgétaire directe générée sur vos impôts.</span>
+                    </div>
+                </label>
+                
+                <!-- Révélation de l'option -->
+                <div id="bloc-resultat-immigres" class="hidden mt-4 p-4 bg-white border border-amber-300 rounded-lg text-sm text-slate-700 space-y-3 leading-relaxed">
+                    <p class="conclusion-ideologique font-bold text-amber-800">🤔 Bilan de l'opération : 0 € d'économie nette pour vous.</p>
+                    <p class="explication-economique">
+                        Selon les études de l'<b>OCDE</b> et du <b>CEPII</b>, l'impact de l'immigration sur les finances publiques est globalement <b>neutre</b> (fluctuant entre -0,5 % et +0,5 % du PIB). Les immigrés cotisent et paient des taxes (notamment la TVA) qui compensent les prestations de protection sociale perçues. Les expulser créerait un gouffre budgétaire immédiat en privant l'État de cotisations et en paralysant des secteurs entiers (BTP, restauration, santé).
+                    </p>
+                    <p class="alternative-fiscale font-semibold text-red-800 bg-red-50 p-2.5 rounded border border-red-200">
+                        💡 <b>Une vraie piste de financement :</b> À titre de comparaison, rétablir l'ISF ou imposer une surtaxe exceptionnelle de seulement <b>1 %</b> sur la fortune des 1000 familles les plus riches rapporterait immédiatement plus de 10 milliards d'euros par an de recettes nettes à l'État sans toucher aux classes populaires et moyennes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bouton de validation -->
+            <button id="bouton-lancer-comparaison" class="bouton-action w-full py-4 px-6 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 duration-150">
+                Comparer les réalités 🚀
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= ECRAN DE RÉSULTATS (STATISTIQUES & ANALYSES) ================= -->
+    <div id="ecran-resultats" class="ecran-resultats hidden">
+        
+        <!-- En-tête des résultats -->
+        <div class="bandeau-resultats bg-slate-900 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="bloc-titre-resultat text-center md:text-left">
+                <p class="metatitre text-xs uppercase tracking-wider text-rose-400 font-bold">L'envers du décor</p>
+                <h2 class="titre-resultat text-2xl font-black mt-1">Votre vie face à <span id="nom-cible-en-tete" class="text-rose-400">...</span></h2>
+            </div>
+            <button id="bouton-retour-accueil" class="bouton-retour px-5 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-sm font-semibold rounded-lg transition-colors">
+                ← Retour
+            </button>
+        </div>
+
+        <div class="contenu-resultats p-6 md:p-8 space-y-8">
+            
+            <!-- SECTION 1 : LES CHIFFRES VERTIGINEUX -->
+            <div class="section-chiffres space-y-6">
+                <h3 class="titre-section text-lg font-bold text-slate-900 border-b pb-2">📊 L'abîme des chiffres</h3>
+                
+                <div class="grille-statistiques grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Statistique 1 : Vitesse d'enrichissement -->
+                    <div class="carte-statistique">
+                        <span class="icone-stat text-2xl">⚡</span>
+                        <p class="titre-stat text-sm text-slate-500 mt-1 font-semibold uppercase">Vitesse d'enrichissement</p>
+                        <p class="description-stat text-base mt-1 text-slate-700">
+                            Pendant votre année de travail, cette personne met : <br>
+                            <span id="valeur-temps-enrichissement" class="valeur-accentuee font-black text-rose-600 text-xl">...</span> <br>
+                            pour empocher la même somme.
+                        </p>
+                    </div>
+
+                    <!-- Statistique 2 : Effet d'échelle (Métro) -->
+                    <div class="carte-statistique">
+                        <span class="icone-stat text-2xl">🚇</span>
+                        <p class="titre-stat text-sm text-slate-500 mt-1 font-semibold uppercase">L'effet d'échelle (ticket de métro)</p>
+                        <p class="description-stat text-base mt-1 text-slate-700">
+                            Acheter un ticket de métro (2,15 €) équivaut pour elle à dépenser : <br>
+                            <span id="valeur-equivalence-metro" class="valeur-accentuee font-black text-rose-600 text-xl">...</span> <br>
+                            <span id="commentaire-equivalence-metro" class="legende-stat text-xs text-slate-500 block mt-1"></span>
+                        </p>
+                    </div>
+
+                    <!-- Statistique 3 : Physique de la fortune -->
+                    <div id="carte-physique-fortune" class="carte-statistique">
+                        <span class="icone-stat text-2xl">📄</span>
+                        <p class="titre-stat text-sm text-slate-500 mt-1 font-semibold uppercase">La physique de sa fortune</p>
+                        <p class="description-stat text-base mt-1 text-slate-700">
+                            Si 1 feuille de papier (0,1 mm d'épaisseur) représentait <b>votre salaire annuel</b>, la pile de sa fortune s'élèverait à :<br>
+                            <span id="valeur-hauteur-papier" class="valeur-accentuee font-black text-rose-600 text-xl">...</span><br>
+                            <span id="commentaire-comparaison-papier" class="legende-stat text-xs text-slate-500 block mt-1"></span>
+                        </p>
+                    </div>
+
+                    <!-- Statistique 4 : Vie de labeur -->
+                    <div class="carte-statistique">
+                        <span class="icone-stat text-2xl">💼</span>
+                        <p class="titre-stat text-sm text-slate-500 mt-1 font-semibold uppercase">Votre vie de labeur</p>
+                        <p class="description-stat text-base mt-1 text-slate-700">
+                            Vos 43 ans de cotisations requis pour votre retraite sont encaissés par cette cible en seulement : <br>
+                            <span id="valeur-temps-vie-labeur" class="valeur-accentuee font-black text-rose-600 text-xl">...</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Statistique 5 : Accumulation historique (Pleine largeur) -->
+                <div id="carte-accumulation-historique" class="carte-statistique w-full">
+                    <span class="icone-stat text-2xl">⏳</span>
+                    <p class="titre-stat text-sm text-slate-500 mt-1 font-semibold uppercase">Accumulation historique</p>
+                    <p class="description-stat text-base mt-1 text-slate-700">
+                        Pour posséder sa fortune (<span id="valeur-fortune-cible" class="font-bold text-slate-900">...</span>) à votre salaire actuel, vous deviez épargner sans rien dépenser depuis l'an :<br>
+                        <span id="valeur-annee-debut-epargne" class="valeur-accentuee font-black text-rose-600 text-xl">...</span><br>
+                        <span id="commentaire-annee-epargne" class="legende-stat text-xs text-slate-500 italic block mt-1"></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- SECTION 2 : L'ORIGINE DE LA RICHESSE ET LE COÛT SOCIAL -->
+            <div id="section-analyse-politique" class="space-y-6">
+                <h3 class="titre-section text-lg font-bold text-slate-900 border-b pb-2">🔍 Analyse politique & Coût Social</h3>
+                
+                <div class="liste-blocs-analyse space-y-4">
+                    <!-- Origine de la fortune -->
+                    <div id="bloc-origine-fortune" class="bloc-analyse-politique bg-rose-50/50 border border-rose-100">
+                        <h4 class="titre-bloc-analyse font-bold text-rose-950 flex items-center gap-2">
+                            <span>🌱</span> D'où provient cette fortune ?
+                        </h4>
+                        <p id="texte-origine-fortune" class="contenu-bloc-analyse text-sm text-rose-900 mt-1 leading-relaxed"></p>
+                    </div>
+
+                    <!-- Cadeaux de l'état -->
+                    <div id="bloc-cadeaux-etat" class="bloc-analyse-politique bg-amber-50/50 border border-amber-100">
+                        <h4 class="titre-bloc-analyse font-bold text-amber-950 flex items-center gap-2">
+                            <span>🎁</span> Les "Cadeaux" de l'État & Optimisation
+                        </h4>
+                        <p id="texte-cadeaux-etat" class="contenu-bloc-analyse text-sm text-amber-900 mt-1 leading-relaxed"></p>
+                    </div>
+
+                    <!-- Impact social et humain -->
+                    <div id="bloc-impact-social" class="bloc-analyse-politique bg-slate-100 border border-slate-200">
+                        <h4 class="titre-bloc-analyse font-bold text-slate-950 flex items-center gap-2">
+                            <span>⚠️</span> Impact Humain & Conflits Sociaux
+                        </h4>
+                        <p id="texte-impact-social" class="contenu-bloc-analyse text-sm text-slate-800 mt-1 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3 : LES SOURCES DÉTAILLÉES -->
+            <div class="bloc-sources p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <h4 class="titre-sources text-xs uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1.5">
+                    📖 Sources des données pour cette fiche
+                </h4>
+                <ul id="liste-sources-details" class="liste-sources text-xs text-slate-600 space-y-2 list-disc list-inside">
+                    <!-- Généré dynamiquement en JS -->
+                </ul>
+            </div>
+
+            <!-- SECTION 4 : LE COMPTEUR LIVE (TEMPS RÉEL) -->
+            <div class="bloc-compteur-live bg-slate-900 text-slate-100 p-6 rounded-2xl space-y-4 shadow-inner relative overflow-hidden">
+                <div class="decor-monnaie-arriere-plan absolute right-4 top-4 text-slate-800 text-7xl font-bold select-none pointer-events-none opacity-10">€€€</div>
+                <p class="titre-compteur text-xs uppercase tracking-wider text-slate-400 font-bold">Depuis votre arrival sur cette fiche :</p>
+                <div class="valeurs-compteur grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="colonne-compteur-cible">
+                        <span id="nom-cible-compteur-live" class="label-compteur block text-sm text-slate-400">...</span>
+                        <span id="gain-cible-temps-reel" class="chiffre-compteur text-2xl font-black text-emerald-400">0.00 €</span>
+                    </div>
+                    <div class="colonne-compteur-utilisateur">
+                        <span class="label-compteur block text-sm text-slate-400">Et vous avez généré (au travail) :</span>
+                        <span id="gain-utilisateur-temps-reel" class="chiffre-compteur text-2xl font-black text-blue-400">0.00 €</span>
+                    </div>
+                </div>
+                <p class="temps-ecoule text-xs text-slate-500">Compteur de présence : <span id="secondes-ecoulees">0</span> seconde(s)</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= BLOC VISUEL D'INFOGRAPHIE (COMPARAISON DES ÉCHELLES DE GRANDEUR) ================= -->
+    <div class="bloc-comparateur-echelles w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-slate-100 p-6 md:p-8 space-y-8">
+        <div class="en-tete-infographie text-center md:text-left border-b pb-4">
+            <h3 class="titre-infographie text-xl font-black text-slate-900">📏 Visualiser l'abîme : La physique des chiffres</h3>
+            <p class="desc-infographie text-xs text-slate-500 mt-1">Il est humainement impossible pour notre cerveau de concevoir la différence physique entre un million et un milliard. Faisons le calcul.</p>
+        </div>
+
+        <div class="barres-comparatives space-y-8">
+            <!-- 10 000 euros (Étape de base) -->
+            <div class="palier-comparatif space-y-2">
+                <div class="infos-palier flex justify-between items-center text-sm font-bold text-slate-700">
+                    <span>🔹 10 000 € (Le petit apport)</span>
+                    <span class="echelle-palier text-xs font-normal text-slate-500">Échelle de base (1x)</span>
+                </div>
+                <div class="barre-conteneur h-4 bg-slate-100 rounded-full overflow-hidden relative">
+                    <div class="barre-progression h-full bg-blue-500" style="width: 1%"></div>
+                </div>
+                <p class="commentaire-palier text-xs text-slate-600 leading-relaxed">
+                    Si 10 000 € étaient représentés par une feuille de papier de <b>1 millimètre d'épaisseur</b>...
+                </p>
+            </div>
+
+            <!-- 1 Million d'euros -->
+            <div class="palier-comparatif space-y-2">
+                <div class="infos-palier flex justify-between items-center text-sm font-bold text-slate-700">
+                    <span>🔸 1 000 000 € (1 Million - Une vie d'épargne)</span>
+                    <span class="echelle-palier text-xs font-normal text-slate-500">100 fois plus grand (100x)</span>
+                </div>
+                <div class="barre-conteneur h-4 bg-slate-100 rounded-full overflow-hidden relative">
+                    <div class="barre-progression h-full bg-amber-500" style="width: 10%"></div>
+                </div>
+                <p class="commentaire-palier text-xs text-slate-600 leading-relaxed">
+                    ...votre pile de feuilles ferait alors <b>10 centimètres de haut</b> (la taille d'un verre d'eau). C'est ce qu'un travailleur au SMIC épargne en cumulant environ 55 ans de salaires nets complets.
+                </p>
+            </div>
+
+            <!-- 1 Milliard d'euros -->
+            <div class="palier-comparatif space-y-2">
+                <div class="infos-palier flex justify-between items-center text-sm font-bold text-slate-700">
+                    <span>🚨 1 000 000 000 € (1 Milliard - Le club oligarchique)</span>
+                    <span class="echelle-palier text-xs font-red-600 font-black">100 000 fois plus grand (100 000x)</span>
+                </div>
+                <div class="barre-conteneur h-4 bg-slate-100 rounded-full overflow-hidden relative">
+                    <div class="barre-progression h-full bg-red-600 animate-pulse" style="width: 100%"></div>
+                </div>
+                <p class="commentaire-palier text-xs text-slate-600 leading-relaxed">
+                    ...votre pile de feuilles s'élèverait à **100 mètres de hauteur** (soit un immeuble de 30 étages).
+                </p>
+            </div>
+
+            <!-- CLASSEMENT DES PERSONNALITÉS SUR CETTE ÉCHELLE -->
+            <div class="bloc-classement-physique bg-slate-900 text-white p-5 rounded-xl space-y-4">
+                <h4 class="titre-classement text-xs uppercase tracking-wider text-rose-400 font-bold">📍 Où se situent nos personnalités sur cette pile de feuilles de 10 000 € (1mm) ?</h4>
+                <div class="grille-classement-elements space-y-3 text-xs text-slate-300" id="liste-classement-milliardaires">
+                    <!-- Généré dynamiquement en JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<script src="K:\Alex\Amusement\java.js"></script>
+</body>
+</html>
